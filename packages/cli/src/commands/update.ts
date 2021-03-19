@@ -37,6 +37,7 @@ const register: (program: any) => any = program =>
     )
     .option('--args <arg1, arg2, ...>', 'provide initialization arguments for your contract if required')
     .option('--all', 'upgrade all contracts in the application')
+    .option('--admin <admin>', "admin of the proxy (uses the project's proxy admin if not set)")
     .option('--force', 'ignore contracts validation errors')
     .withNetworkOptions()
     .withSkipCompileOption()
@@ -55,7 +56,7 @@ async function commandActions(proxyReference: string, options: any): Promise<voi
 }
 
 async function action(proxyReference: string, options: any): Promise<void> {
-  const { network, txParams, force, interactive, all, init: rawInitMethod } = options;
+  const { network, txParams, admin, force, interactive, all, init: rawInitMethod } = options;
 
   if (!(await hasToMigrateProject(network))) process.exit(0);
 
@@ -73,6 +74,7 @@ async function action(proxyReference: string, options: any): Promise<void> {
 
   const args = pickBy({
     all: promptedProxyInfo.all,
+    // admin,
     force,
     ...parsedContractReference,
     ...initMethodParams,

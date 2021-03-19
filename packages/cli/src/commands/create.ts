@@ -33,6 +33,7 @@ const register: (program: any) => any = program =>
     .description(description)
     .option('--init [function]', `call function after creating contract. If none is given, 'initialize' will be used`)
     .option('--args <arg1, arg2, ...>', 'provide initialization arguments for your contract if required')
+    .option('--admin <admin>', "admin of the proxy (uses the project's proxy admin if not set)")
     .option('--force', 'ignore contracts validation errors')
     .option('--minimal', 'creates a cheaper but non-upgradeable instance instead, using a minimal proxy')
     .withNetworkOptions()
@@ -78,7 +79,7 @@ export async function createAction(contractFullName: string, options: any): Prom
 }
 
 async function action(contractFullName: string, options: any): Promise<void> {
-  const { force, network, txParams, init: rawInitMethod } = options;
+  const { admin, force, network, txParams, init: rawInitMethod} = options;
   const { contract: contractAlias, package: packageName } = fromContractFullName(contractFullName);
 
   const additionalOpts = {
@@ -92,6 +93,7 @@ async function action(contractFullName: string, options: any): Promise<void> {
     contractAlias,
     methodName,
     methodArgs,
+    admin,
     force,
   } as CreateParams);
 
